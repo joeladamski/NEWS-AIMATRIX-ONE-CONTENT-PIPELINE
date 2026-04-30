@@ -48,3 +48,20 @@ Do not rewrite source doctrine casually. If doctrine changes are needed, documen
 ## Core Thesis
 AI does not become trustworthy because it is powerful.
 AI becomes trustworthy when it is governed.
+
+## Draft Publishing Workflow for news.aimatrix.one
+
+Codex writes article drafts → GitHub stores reviewed content → GitHub Actions or n8n sends posts to WordPress as draft → human reviews in WordPress → human publishes.
+
+### Workflow Stages
+1. **Drafting:** AI-generated article drafts are created in `content/drafts/`.
+2. **Review Prep:** Drafts move to `content/ready-for-review/` with required templates and metadata.
+3. **Approval:** Human reviewers approve and move content to `content/approved/`.
+4. **Draft Delivery:** A future governed automation (GitHub Actions or n8n) submits approved content to WordPress with `status=draft` only.
+5. **Human Publication:** Human editors review and publish manually in WordPress.
+
+### Governance Constraints
+- No direct auto-publishing to WordPress.
+- WordPress post creation is draft-only.
+- Human review is mandatory before publication.
+- Secrets are managed via environment variables and GitHub Secrets; no real credentials in repo.
