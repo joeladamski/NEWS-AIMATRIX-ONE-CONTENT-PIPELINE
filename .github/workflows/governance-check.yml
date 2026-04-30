@@ -1,0 +1,51 @@
+name: Governance Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  required-governance-files:
+    name: Verify required governance files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate required governance files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "README.md"
+            "AGENTS.md"
+            "docs/source-framework/04-AI-CONSTITUTION-CORE-FRAMEWORK.md"
+            "docs/source-framework/07-AI-CONSTITUTION-DO-NOT-DRIFT.md"
+            ".ai-constitution/CHARTER.md"
+            ".ai-constitution/POLICY.md"
+            ".ai-constitution/CHANGE_AUTHORITY.md"
+            ".ai-constitution/RISK_REGISTER.md"
+            ".ai-constitution/DECISION_LOG.md"
+            ".github/PULL_REQUEST_TEMPLATE.md"
+          )
+
+          missing=0
+          for file in "${required_files[@]}"; do
+            if [[ ! -f "$file" ]]; then
+              echo "::error title=Missing governance file::Required file not found: $file"
+              missing=1
+            else
+              echo "Found: $file"
+            fi
+          done
+
+          if [[ "$missing" -ne 0 ]]; then
+            echo "One or more required governance files are missing."
+            exit 1
+          fi
+
+          echo "All required governance files are present."
